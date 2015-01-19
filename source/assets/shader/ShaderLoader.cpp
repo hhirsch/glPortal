@@ -71,8 +71,8 @@ int ShaderLoader::loadShader(std::string path, GLenum type) {
     if (type == GL_FRAGMENT_SHADER) {
       std::cout << "Fragment shader compilation failed" << std::endl;
     }
-    GLint logSize = 0;
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logSize);
+    const GLint logSize = 1024;
+    //glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logSize);
 
     char errorLog[logSize];
     glGetShaderInfoLog(shader, logSize, NULL, &errorLog[0]);

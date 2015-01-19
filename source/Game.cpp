@@ -38,7 +38,7 @@ void Game::update() {
   unsigned int nextUpdate = SDL_GetTicks();
   Fps fps;
   
-  while (not closed) {
+  while (!closed) {
     skipped = 0;
     fps.getFps();
     //Update the game if it is time

@@ -13,7 +13,7 @@ vector<string> MapListLoader::getMapList() {
   std::string path = Environment::getDataDir() + "maps/maplist";
   ifstream file(path);
 
-  if(not file.is_open()) {
+  if(!file.is_open()) {
     throw runtime_error("Could not find file: data/maps/maplist");
   }
 

@@ -27,7 +27,7 @@ void Window::initGlew(){
     std::cout << GLEW_INIT_ERROR_MESSAGE << " " <<  glewGetErrorString(glewInitReturnValue) << endl;
     std::exit(1);
   }
-  if (not GLEW_VERSION_2_1) {
+  if (!GLEW_VERSION_2_1) {
     std::cout << GLEW_UNSUPPORTED_MESSAGE << endl;
     std::exit(1);
   }

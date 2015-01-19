@@ -1,6 +1,6 @@
 #include "Renderer.hpp"
 
-#include <cstdio>
+#include "stdio.h"
 #include <vector>
 
 #include <assets/model/MeshLoader.hpp>
@@ -86,13 +86,13 @@ void Renderer::render() {
     Light light = scene->lights[i];
 
     char attribute[30];
-    snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].position");
+    _snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].position");
     int lightPos = glGetUniformLocation(shader.handle, attribute);
-    snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].color");
+    _snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].color");
     int lightColor = glGetUniformLocation(shader.handle, attribute);
-    snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].distance");
+    _snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].distance");
     int lightDistance = glGetUniformLocation(shader.handle, attribute);
-    snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].energy");
+    _snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].energy");
     int lightEnergy = glGetUniformLocation(shader.handle, attribute);
 
     glUniform3f(lightPos, light.position.x, light.position.y, light.position.z);
