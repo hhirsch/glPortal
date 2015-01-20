@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{67F7C97A-823F-4509-B064-A7573ED32FD0}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GlPortal</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>G:\GlPortal\GlPortalVS\GlPortal\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>G:\GlPortal\GlPortalVS\GlPortal\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Includes;G:\GlPortal\GlPortalVS\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2main.lib;SDL2.lib;SDL2_mixer.lib;assimp.lib;tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Includes;G:\GlPortal\GlPortalVS\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2main.lib;SDL2.lib;SDL2_mixer.lib;assimp.lib;tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\assets\gui\GUIButton.cpp" />
+    <ClCompile Include="..\source\assets\map\MapListLoader.cpp" />
+    <ClCompile Include="..\source\assets\map\MapLoader.cpp" />
+    <ClCompile Include="..\source\assets\map\XmlHelper.cpp" />
+    <ClCompile Include="..\source\assets\model\MeshLoader.cpp" />
+    <ClCompile Include="..\source\assets\shader\ShaderLoader.cpp" />
+    <ClCompile Include="..\source\assets\texture\TextureLoader.cpp" />
+    <ClCompile Include="..\source\assets\text\FontLoader.cpp" />
+    <ClCompile Include="..\source\engine\BoxCollider.cpp" />
+    <ClCompile Include="..\source\engine\Camera.cpp" />
+    <ClCompile Include="..\source\engine\core\diag\ConsoleLogger.cpp" />
+    <ClCompile Include="..\source\engine\core\diag\Logger.cpp" />
+    <ClCompile Include="..\source\engine\core\file\Path.cpp" />
+    <ClCompile Include="..\source\engine\core\math\Math.cpp" />
+    <ClCompile Include="..\source\engine\core\math\Matrix4f.cpp" />
+    <ClCompile Include="..\source\engine\core\math\Vector2f.cpp" />
+    <ClCompile Include="..\source\engine\core\math\Vector3f.cpp" />
+    <ClCompile Include="..\source\engine\env\Config.cpp" />
+    <ClCompile Include="..\source\engine\env\ConfigFileParser.cpp" />
+    <ClCompile Include="..\source\engine\env\Environment.cpp" />
+    <ClCompile Include="..\source\engine\env\System.cpp" />
+    <ClCompile Include="..\source\engine\Ray.cpp" />
+    <ClCompile Include="..\source\engine\renderer\Renderer.cpp" />
+    <ClCompile Include="..\source\engine\Sound.cpp" />
+    <ClCompile Include="..\source\engine\trigger\Trigger.cpp" />
+    <ClCompile Include="..\source\Game.cpp" />
+    <ClCompile Include="..\source\Input.cpp" />
+    <ClCompile Include="..\source\Player.cpp" />
+    <ClCompile Include="..\source\Portal.cpp" />
+    <ClCompile Include="..\source\util\sdl\Fps.cpp" />
+    <ClCompile Include="..\source\Window.cpp" />
+    <ClCompile Include="..\source\World.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\source\assets\gui\GUIButton.hpp" />
+    <ClInclude Include="..\source\assets\map\MapListLoader.hpp" />
+    <ClInclude Include="..\source\assets\map\MapLoader.hpp" />
+    <ClInclude Include="..\source\assets\map\XmlHelper.hpp" />
+    <ClInclude Include="..\source\assets\model\Mesh.hpp" />
+    <ClInclude Include="..\source\assets\model\MeshLoader.hpp" />
+    <ClInclude Include="..\source\assets\scene\Scene.hpp" />
+    <ClInclude Include="..\source\assets\shader\Shader.hpp" />
+    <ClInclude Include="..\source\assets\shader\ShaderLoader.hpp" />
+    <ClInclude Include="..\source\assets\texture\Texture.hpp" />
+    <ClInclude Include="..\source\assets\texture\TextureLoader.hpp" />
+    <ClInclude Include="..\source\assets\text\Font.hpp" />
+    <ClInclude Include="..\source\assets\text\FontLoader.hpp" />
+    <ClInclude Include="..\source\assets\text\Letter.hpp" />
+    <ClInclude Include="..\source\engine\BoxCollider.hpp" />
+    <ClInclude Include="..\source\engine\Camera.hpp" />
+    <ClInclude Include="..\source\engine\core\diag\ConsoleLogger.hpp" />
+    <ClInclude Include="..\source\engine\core\diag\Logger.hpp" />
+    <ClInclude Include="..\source\engine\core\file\Path.hpp" />
+    <ClInclude Include="..\source\engine\core\math\Math.hpp" />
+    <ClInclude Include="..\source\engine\core\math\Matrix4f.hpp" />
+    <ClInclude Include="..\source\engine\core\math\Vector2f.hpp" />
+    <ClInclude Include="..\source\engine\core\math\Vector3f.hpp" />
+    <ClInclude Include="..\source\engine\Entity.hpp" />
+    <ClInclude Include="..\source\engine\env\Config.hpp" />
+    <ClInclude Include="..\source\engine\env\ConfigFileParser.hpp" />
+    <ClInclude Include="..\source\engine\env\Environment.hpp" />
+    <ClInclude Include="..\source\engine\env\System.hpp" />
+    <ClInclude Include="..\source\engine\Light.hpp" />
+    <ClInclude Include="..\source\engine\Ray.hpp" />
+    <ClInclude Include="..\source\engine\renderer\Renderer.hpp" />
+    <ClInclude Include="..\source\engine\Sound.hpp" />
+    <ClInclude Include="..\source\engine\trigger\Trigger.hpp" />
+    <ClInclude Include="..\source\Game.hpp" />
+    <ClInclude Include="..\source\Input.hpp" />
+    <ClInclude Include="..\source\Player.hpp" />
+    <ClInclude Include="..\source\Portal.hpp" />
+    <ClInclude Include="..\source\util\sdl\Fps.hpp" />
+    <ClInclude Include="..\source\Window.hpp" />
+    <ClInclude Include="..\source\World.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

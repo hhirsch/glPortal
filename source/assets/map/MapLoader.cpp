@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <stdexcept>
 #include <vector>
+#include <string>
 
 #include <assets/map/XmlHelper.hpp>
 #include <engine/env/Environment.hpp>
@@ -121,8 +122,8 @@ void MapLoader::extractDoor() {
 
 void MapLoader::extractWalls() {
   XMLElement* textureElement = rootHandle.FirstChildElement("texture").ToElement();
-  string texturePath("none");
-  string surfaceType("none");
+  std::string texturePath("none");
+  std::string surfaceType("none");
 
   if (textureElement) {
     do {
@@ -131,7 +132,8 @@ void MapLoader::extractWalls() {
       }
       
       texturePath.assign(textureElement->Attribute("source"));
-      surfaceType.assign(textureElement->Attribute("type"));
+      //surfaceType.assign(textureElement->Attribute("type"));
+
       XMLElement* wallBoxElement = textureElement->FirstChildElement("wall");
       
       if (wallBoxElement) {
