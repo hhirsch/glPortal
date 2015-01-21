@@ -1,93 +1,91 @@
-#include "Camera.hpp"
-#include <engine/core/math/Math.hpp>
+/* ---------------------------------------------------------------------------
+** This software is in the public domain, furnished "as is", without technical
+** support, and with no warranty, express or implied, as to its usefulness for
+** any purpose.
+**
+** Camera.h
+** Declares a camera class containing functions perform perspective or
+** orthographic transformations on a matrix
+**
+** Author: Julian Thijssen
+** -------------------------------------------------------------------------*/
 
+#include "Camera.hpp"
+
+#include <engine/core/math/Matrix4f.hpp>
+#include <engine/core/math/Math.hpp>
 #include <math.h>
-#include "../Window.hpp"
 
 namespace glPortal {
 
-Camera::Camera(float fovy, float aspect, float zNear, float zFar) {
-  this->fovy = fovy;
-  this->aspect = aspect;
-  this->zNear = zNear;
-  this->zFar = zFar;
-  recalculate();
+Camera::Camera() {
+
 }
 
-void Camera::recalculate() {
-  float aspect = (float) Window::width / Window::height;
+Camera::Camera(float left, float right, float bottom, float top, float zNear, float zFar) :
+	left(left), 
+	right(right), 
+	bottom(bottom),
+	top(top),
+	zNear(zNear),
+	zFar(zFar) { }
 
-  projectionMatrix.setIdentity();
-  if (perspective) {
-    float fovyr = Math::toRadians(fovy);
-    projectionMatrix.array[0] = (float) (1 / tan(fovyr / 2)) / aspect;
-    projectionMatrix.array[5] = (float) (1 / tan(fovyr / 2));
-    projectionMatrix.array[10] = (zNear + zFar) / (zNear - zFar);
-    projectionMatrix.array[11] = -1;
-    projectionMatrix.array[14] = (2 * zNear * zFar) / (zNear - zFar);
-    projectionMatrix.array[15] = 0;
-  } else {
-    projectionMatrix.array[0] = 2 / (right - left);
-    projectionMatrix.array[5] = 2 / (top - bottom);
-    projectionMatrix.array[10] = -2 / (zFar - zNear);
-    projectionMatrix.array[12] = (-right - left) / (right - left);
-    projectionMatrix.array[13] = (-top - bottom) / (top - bottom);
-    projectionMatrix.array[14] = (-zFar - zNear) / (zFar - zNear);
-  }
-}
+Camera::Camera(float fovy, float aspect, float zNear, float zFar) :
+	fovy(fovy),
+	aspect(aspect),
+	zNear(zNear),
+	zFar(zFar) { }
 
-Matrix4f Camera::getProjectionMatrix() {
-  return projectionMatrix;
-}
-
-void Camera::setFovy(float fovy) {
-  this->fovy = fovy;
-  recalculate();
-}
-
-void Camera::setAspect(float aspect) {
-  this->aspect = aspect;
-  recalculate();
-}
-
-void Camera::setZNear(float zNear) {
-  this->zNear = zNear;
-  recalculate();
-}
-
-void Camera::setZFar(float zFar) {
-  this->zFar = zFar;
-  recalculate();
+void Camera::loadProjectionMatrix(Matrix4f& m) {
+	m.setIdentity();
+	if (perspective) {
+		float fovyr = Math::toRadians(fovy);
+		m.a[0] = (float)(1 / tan(fovyr / 2)) / aspect;
+		m.a[5] = (float)(1 / tan(fovyr / 2));
+		m.a[10] = (zNear + zFar) / (zNear - zFar);
+		m.a[11] = -1;
+		m.a[14] = (2 * zNear * zFar) / (zNear - zFar);
+		m.a[15] = -0;
+	}
+	else {
+		m.a[0] = 2 / (right - left);
+		m.a[5] = 2 / (top - bottom);
+		m.a[10] = -2 / (zFar - zNear);
+		m.a[12] = (left - right) / (right - left);
+		m.a[13] = (bottom - top) / (top - bottom);
+		m.a[14] = (zNear - zFar) / (zFar - zNear);
+	}
 }
 
 void Camera::setPerspective() {
-  this->perspective = true;
-  recalculate();
+	perspective = true;
 }
 
 void Camera::setOrthographic() {
-  this->perspective = false;
-  recalculate();
+	perspective = false;
 }
 
-void Camera::setLeft(float left) {
-  this->left = left;
-  recalculate();
+void Camera::setFovy(float fovy) {
+	this->fovy = fovy;
 }
 
-void Camera::setRight(float right) {
-  this->right = right;
-  recalculate();
+void Camera::setAspectRatio(float aspect) {
+	this->aspect = aspect;
 }
 
-void Camera::setTop(float top) {
-  this->top = top;
-  recalculate();
+void Camera::setZNear(float zNear) {
+	this->zNear = zNear;
 }
 
-void Camera::setBottom(float bottom) {
-  this->bottom = bottom;
-  recalculate();
+void Camera::setZFar(float zFar) {
+	this->zFar = zFar;
+}
+
+void Camera::setBounds(float left, float right, float bottom, float top) {
+	this->left = left;
+	this->right = right;
+	this->bottom = bottom;
+	this->top = top;
 }
 
 } /* namespace glPortal */

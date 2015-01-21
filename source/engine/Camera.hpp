@@ -1,56 +1,68 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+/* ---------------------------------------------------------------------------
+** This software is in the public domain, furnished "as is", without technical
+** support, and with no warranty, express or implied, as to its usefulness for
+** any purpose.
+**
+** Camera.hpp
+** Declares a camera class containing functions perform perspective or
+** orthographic transformations on a matrix
+**
+** Author: Julian Thijssen
+** -------------------------------------------------------------------------*/
 
-#include <engine/core/math/Matrix4f.hpp>
+#pragma once
+#ifndef CAMERA_HPP
+#define CAMERA_HPP
+
 #include <engine/core/math/Vector3f.hpp>
-
-const float DEFAULT_FOVY = 60;
-const float DEFAULT_ASPECT = 1;
-const float DEFAULT_ZNEAR = 0.1f;
-const float DEFAULT_ZFAR = 100;
-const bool  DEFAULT_PERSPECTIVE = true;
-const float DEFAULT_TOP = 0.5f;
-const float DEFAULT_BOTTOM = -0.5f;
-const float DEFAULT_LEFT = -0.5f;
-const float DEFAULT_RIGHT = 0.5f;
 
 namespace glPortal {
 
+class Matrix4f;
+
 class Camera {
 public:
-  Camera() {
-    recalculate();
-  }
-  Camera(float fovy, float aspect, float zNear, float zFar);
-  void recalculate();
-  Matrix4f getProjectionMatrix();
-  void setFovy(float fovy);
-  void setAspect(float aspect);
-  void setZNear(float zNear);
-  void setZFar(float zFar);
-  void setPerspective();
-  void setOrthographic();
-  void setLeft(float left);
-  void setRight(float right);
-  void setTop(float top);
-  void setBottom(float bottom);
+	Vector3f position;
+	Vector3f rotation;
 
-  Vector3f position;
-  Vector3f rotation;
+	Camera();
+	Camera(float left, float right, float bottom, float top, float zNear, float zFar);
+	Camera(float fovy, float aspect, float zNear, float zFar);
+	void loadProjectionMatrix(Matrix4f& m);
+	void setPerspective();
+	void setOrthographic();
+
+	void setFovy(float fovy);
+	void setAspectRatio(float aspect);
+	void setZNear(float zNear);
+	void setZFar(float zFar);
+
+	void setBounds(float left, float right, float bottom, float top);
+
 private:
-  Matrix4f projectionMatrix;
-  bool perspective = DEFAULT_PERSPECTIVE;
-  float fovy    = DEFAULT_FOVY;
-  float aspect  = DEFAULT_ASPECT;
-  float zNear   = DEFAULT_ZNEAR;
-  float zFar    = DEFAULT_ZFAR;
+	const bool DEFAULT_PERSPECTIVE = true;
+	const float DEFAULT_FOVY   = 60;
+	const float DEFAULT_ASPECT = 1;
+	const float DEFAULT_ZNEAR  = 0.1f;
+	const float DEFAULT_ZFAR   = 100;
 
-  float top     = DEFAULT_TOP;
-  float bottom  = DEFAULT_BOTTOM;
-  float left    = DEFAULT_LEFT;
-  float right   = DEFAULT_RIGHT;
+	const float DEFAULT_LEFT   = -1;
+	const float DEFAULT_RIGHT  = 1;
+	const float DEFAULT_BOTTOM = -1;
+	const float DEFAULT_TOP    = 1;
+
+	bool perspective = DEFAULT_PERSPECTIVE;
+	float fovy   = DEFAULT_FOVY;
+	float aspect = DEFAULT_ASPECT;
+	float zNear  = DEFAULT_ZNEAR;
+	float zFar   = DEFAULT_ZFAR;
+
+	float top    = DEFAULT_TOP;
+	float bottom = DEFAULT_BOTTOM;
+	float left   = DEFAULT_LEFT;
+	float right  = DEFAULT_RIGHT;
 };
 
 } /* namespace glPortal */
 
-#endif /* CAMERA_H */
+#endif /* CAMERA_HPP */

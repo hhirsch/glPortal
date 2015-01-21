@@ -74,12 +74,13 @@ void Renderer::render() {
 
   Camera& camera = scene->camera;
   camera.setPerspective();
-  projectionMatrix = camera.getProjectionMatrix();
+  camera.setAspectRatio((float) Window::width / Window::height);
+  camera.loadProjectionMatrix(projectionMatrix);
 
   changeShader("diffuse.frag");
 
   //Upload projection matrix
-  glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.array);
+  glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.a);
 
   //Lights
   for (unsigned int i = 0; i < scene->lights.size(); i++) {
@@ -114,7 +115,7 @@ void Renderer::render() {
   viewMatrix.rotate(-scene->camera.rotation.x, 1, 0, 0);
   viewMatrix.rotate(-scene->camera.rotation.y, 0, 1, 0);
   viewMatrix.translate(negate(scene->camera.position));
-  glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.array);
+  glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.a);
 
   //Depth buffer
   if (scene->bluePortal.open && scene->orangePortal.open) {
@@ -126,7 +127,7 @@ void Renderer::render() {
     modelMatrix.translate(scene->bluePortal.position);
     modelMatrix.rotate(scene->bluePortal.rotation);
     modelMatrix.scale(scene->bluePortal.scale);
-    glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.array);
+    glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.a);
 
     Mesh portalStencil = MeshLoader::getMesh("PortalStencil.obj");
     glBindVertexArray(portalStencil.handle);
@@ -136,7 +137,7 @@ void Renderer::render() {
     modelMatrix.translate(scene->orangePortal.position);
     modelMatrix.rotate(scene->orangePortal.rotation);
     modelMatrix.scale(scene->orangePortal.scale);
-    glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.array);
+    glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.a);
 
     glDrawArrays(GL_TRIANGLES, 0, portalStencil.numFaces * 3);
     glBindVertexArray(0);
@@ -149,15 +150,15 @@ void Renderer::render() {
   //Draw overlays
   changeShader("unshaded.frag");
 
-  projectionMatrix = camera.getProjectionMatrix();
-  glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.array);
+  camera.loadProjectionMatrix(projectionMatrix);
+  glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.a);
 
   //Update camera position
   viewMatrix.setIdentity();
   viewMatrix.rotate(-scene->camera.rotation.x, 1, 0, 0);
   viewMatrix.rotate(-scene->camera.rotation.y, 0, 1, 0);
   viewMatrix.translate(negate(scene->camera.position));
-  glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.array);
+  glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.a);
 
   renderPortalOverlay(scene->bluePortal);
   renderPortalOverlay(scene->orangePortal);
@@ -165,23 +166,20 @@ void Renderer::render() {
   //Draw GUI
   glClear(GL_DEPTH_BUFFER_BIT);
   camera.setOrthographic();
-  camera.setLeft(0);
-  camera.setRight(Window::width);
-  camera.setBottom(0);
-  camera.setTop(Window::height);
+  camera.setBounds(0, Window::width, 0, Window::height);
 
   //Upload matrices
-  projectionMatrix = camera.getProjectionMatrix();
-  glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.array);
+  camera.loadProjectionMatrix(projectionMatrix);
+  glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.a);
   viewMatrix.setIdentity();
-  glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.array);
+  glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.a);
 
   //Crosshair
   {
   modelMatrix.setIdentity();
   modelMatrix.translate(Vector3f(Window::width/2, Window::height/2, -2));
   modelMatrix.scale(Vector3f(80, 80, 1));
-  glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.array);
+  glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.a);
   Mesh mesh = MeshLoader::getMesh("GUIElement.obj");
   Texture texture = TextureLoader::getTexture("Reticle.png");
   renderTexturedMesh(mesh, texture);
@@ -209,9 +207,9 @@ void Renderer::renderEntity(const Entity& e) {
   modelMatrix.translate(e.position);
   modelMatrix.rotate(e.rotation);
   modelMatrix.scale(e.scale);
-  glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.array);
+  glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.a);
   Matrix4f normalMatrix = inverse(modelMatrix);
-  glUniformMatrix4fv(normalLoc, 1, false, normalMatrix.array);
+  glUniformMatrix4fv(normalLoc, 1, false, normalMatrix.a);
 
   renderTexturedMesh(e.mesh, e.texture);
 }
@@ -228,7 +226,7 @@ void Renderer::renderPortal(const Portal& portal, const Portal& otherPortal) {
     viewMatrix.rotate(-scene->camera.rotation.x, 1, 0, 0);
     viewMatrix.rotate(-scene->camera.rotation.y, 0, 1, 0);
     viewMatrix.translate(negate(scene->camera.position));
-    glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.array);
+    glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.a);
 
     //Stencil drawing
     //Primary portal
@@ -239,7 +237,7 @@ void Renderer::renderPortal(const Portal& portal, const Portal& otherPortal) {
     modelMatrix.translate(portal.position);
     modelMatrix.rotate(portal.rotation);
     modelMatrix.scale(portal.scale);
-    glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.array);
+    glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.a);
 
     Mesh portalStencil = MeshLoader::getMesh("PortalStencil.obj");
     glBindVertexArray(portalStencil.handle);
@@ -258,7 +256,8 @@ void Renderer::renderPortal(const Portal& portal, const Portal& otherPortal) {
 
     //Set the camera back to normal
     scene->camera.setPerspective();
-    glUniformMatrix4fv(projLoc, 1, false, scene->camera.getProjectionMatrix().array);
+	scene->camera.loadProjectionMatrix(projectionMatrix);
+    glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.a);
     glDisable(GL_STENCIL_TEST);
   }
 }
@@ -269,7 +268,7 @@ void Renderer::renderPortalOverlay(const Portal& portal) {
     modelMatrix.translate(portal.position);
     modelMatrix.rotate(portal.rotation);
     modelMatrix.scale(portal.scale);
-    glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.array);
+    glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.a);
 
     renderTexturedMesh(portal.mesh, portal.texture);
   }
@@ -279,10 +278,10 @@ void Renderer::renderText(std::string text, int x, int y) {
   glClear(GL_DEPTH_BUFFER_BIT);
 
   changeShader("text.frag");
-  projectionMatrix = scene->camera.getProjectionMatrix();
-  glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.array);
+  scene->camera.loadProjectionMatrix(projectionMatrix);
+  glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.a);
   viewMatrix.setIdentity();
-  glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.array);
+  glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.a);
   Texture texture = TextureLoader::getTexture("Adobe.png");
 
   Vector2f position(x, y);
@@ -295,13 +294,14 @@ void Renderer::renderText(std::string text, int x, int y) {
     Mesh mesh = letter.mesh;
 
     modelMatrix.setIdentity();
-    modelMatrix.translate(position.x + letter.xOffset * font.size,
-                          position.y + letter.yOffset * font.size,
-                          -10);
+    modelMatrix.translate(Vector3f(position.x + letter.xOffset * font.size,
+                                   position.y + letter.yOffset * font.size,
+                                   -10));
 
-    modelMatrix.scale(letter.width * font.size,
-                      letter.height * font.size, 1);
-    glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.array);
+    modelMatrix.scale(Vector3f(letter.width * font.size,
+                               letter.height * font.size,
+                               1));
+    glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.a);
 
     renderTexturedMesh(mesh, texture);
     position.x += letter.advance * font.size;
@@ -349,14 +349,16 @@ void Renderer::setCameraInPortal(const Portal& portal, const Portal& otherPortal
   //Draw only whats visible through the portal
   Camera camera;
   camera.setPerspective();
+  camera.setAspectRatio((float)Window::width / Window::height);
   camera.setZNear((otherPortal.position - fcamPos).length());
-  glUniformMatrix4fv(projLoc, 1, false, camera.getProjectionMatrix().array);
+  camera.loadProjectionMatrix(projectionMatrix);
+  glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.a);
 
   viewMatrix.setIdentity();
   viewMatrix.rotate(-fcamRot.x, 1, 0, 0);
   viewMatrix.rotate(-fcamRot.y, 0, 1, 0);
   viewMatrix.translate(negate(fcamPos));
-  glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.array);
+  glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.a);
 }
 
 } /* namespace glPortal */
