@@ -6,9 +6,19 @@
 
 namespace glPortal {
 
+/** \class AnsiConsoleLogger
+ * @brief Logger that outputs to an ANSI/vt-100 console
+ */
 class AnsiConsoleLogger : public Logger {
 public:
-  bool enableColors, enableBackground;
+  /**
+   * @brief Enables colored output
+   */
+  bool enableColors;
+  /**
+   * @brief Enables colored backround on log tags
+   */
+  bool enableBackground;
 
   AnsiConsoleLogger();
 

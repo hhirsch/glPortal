@@ -13,8 +13,8 @@
 namespace glPortal {
 std::string ArgumentsParser::mapName = "";
 std::string ArgumentsParser::mapPath = "";
+
 void ArgumentsParser::setEnvironmentFromArgs(const int argc, char **argv) {
-  
   static struct option long_options[] = {
     {"version",          no_argument,       0, 'v'},
     {"help",             no_argument,       0, 'h'},
@@ -23,7 +23,7 @@ void ArgumentsParser::setEnvironmentFromArgs(const int argc, char **argv) {
     {"mapfrompath",      required_argument, 0, 'p'},
     {0, 0, 0, 0}
   };
-  
+
   while (1) {
     int option_index = 0;
     int argument;
@@ -32,7 +32,7 @@ void ArgumentsParser::setEnvironmentFromArgs(const int argc, char **argv) {
     if (argument == -1) {
       break;
     }
-    
+
     /// Command Line arguments
     switch (argument) {
     case 'v':
@@ -48,12 +48,21 @@ void ArgumentsParser::setEnvironmentFromArgs(const int argc, char **argv) {
     case 'h':
       /// - help \n
       /// Display the help.
-      std::cout << "Help\n";
+      std::cout << "Usage: glportal [options]" << std::endl << std::endl;
+
+      std::cout << "Options:" << std::endl;
+      std::cout << "  --help               Show this help message and exit" << std::endl;
+      std::cout << "  --version            Display GlPortal version" << std::endl;
+      std::cout << "  --datadir DIR        Set the data directory" << std::endl;
+      std::cout << "  --map NAME           Specify map name to load" << std::endl;
+      std::cout << "  --mapfrompath FILE   Load the specified map file" << std::endl;
+
       exit(0);
     case 'm':
       /// - map \n
       /// Set the map that should be loaded.
       mapName = optarg;
+      break;
     case 'p':
       /// - mapFromPath \n
       /// Set the map that should be loaded.
@@ -63,13 +72,15 @@ void ArgumentsParser::setEnvironmentFromArgs(const int argc, char **argv) {
     }
   }
 }
+
 void ArgumentsParser::populateConfig() {
   Config &config = Environment::getConfig();
-  if (mapName != ""){
+  if (not mapName.empty()) {
     config.map = mapName;
   }
-  if (mapPath != ""){
+  if (not mapPath.empty()) {
     config.mapPath = mapPath;
-  }  
+  }
 }
+
 } /* namespace glPortal */

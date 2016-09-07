@@ -17,19 +17,28 @@
 
 namespace glPortal {
 
-class Vector2f {
-public:
-  float x, y;
+/** \class Vector2f
+ * @brief 2-dimensional `float`-based vector/point storage and manipulation struct
+ */
+struct Vector2f {
+  union {
+    float x, r, s, u;
+  };
+  union {
+    float y, g, t, v;
+  };
 
-  static const Vector2f ZERO;
-  static const Vector2f UP;
+  static const Vector2f ZERO, UP;
 
   /* Core */
-  Vector2f();
-  Vector2f(float x, float y);
+  constexpr Vector2f()
+    : x(0), y(0) {}
+  constexpr Vector2f(float x, float y)
+    : x(x), y(y) {}
+  constexpr Vector2f(float v)
+    : x(v), y(v) {}
+
   void set(float x, float y);
-  void set(const Vector2f& v);
-  Vector2f& normalise();
 
   float length() const;
   std::string str() const;
@@ -47,12 +56,14 @@ public:
   Vector2f operator-() const;
   Vector2f operator*(float scale) const;
   Vector2f operator/(float divisor) const;
+
+  bool fuzzyEqual(const Vector2f&, float threshold = .02f) const;
 };
 
 /* Utility functions */
 float dot(const Vector2f& v1, const Vector2f& v2);
 Vector2f negate(const Vector2f& v);
-Vector2f normalise(const Vector2f& v);
+Vector2f normalize(const Vector2f& v);
 
 } /* namespace glPortal */
 

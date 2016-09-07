@@ -19,25 +19,9 @@ const Vector2f Vector2f::ZERO = Vector2f(0, 0);
 const Vector2f Vector2f::UP = Vector2f(0, 1);
 
 /* Core */
-Vector2f::Vector2f() : x(0), y(0) {}
-
-Vector2f::Vector2f(float x, float y) : x(x), y(y) {}
-
 void Vector2f::set(float x, float y) {
   this->x = x;
   this->y = y;
-}
-
-void Vector2f::set(const Vector2f& v) {
-  x = v.x;
-  y = v.y;
-}
-
-Vector2f& Vector2f::normalise() {
-  float l = length();
-  x /= l;
-  y /= l;
-  return *this;
 }
 
 float Vector2f::length() const {
@@ -109,6 +93,11 @@ Vector2f Vector2f::operator/(float divisor) const {
   return Vector2f(x / divisor, y / divisor);
 }
 
+bool Vector2f::fuzzyEqual(const Vector2f &v, float threshold) const {
+  return (x > v.x - threshold and x < v.x + threshold) and
+         (y > v.y - threshold and y < v.y + threshold);
+}
+
 /* Utility functions */
 float dot(const Vector2f& v1, const Vector2f& v2) {
   return v1.x * v2.x + v1.y * v2.y;
@@ -118,9 +107,9 @@ Vector2f negate(const Vector2f& v) {
   return Vector2f(-v.x, -v.y);
 }
 
-Vector2f normalise(const Vector2f& v) {
-  float l = v.length();
-  return Vector2f(v.x / l, v.y / l);
+Vector2f normalize(const Vector2f& v) {
+  float length = v.length();
+  return Vector2f(v.x / length, v.y / length);
 }
 
 } /* namespace glPortal */

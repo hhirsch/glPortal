@@ -13,12 +13,13 @@
 #include <engine/core/event/Observer.hpp>
 #include <engine/core/event/Dispatcher.hpp>
 #include <engine/core/event/observer/MusicObserver.hpp>
+#include <engine/GWENInput.hpp>
 #include "Input.hpp"
 #include "Game.hpp"
 
 namespace glPortal {
 
-  GameController::GameController(Game *game) {
+GameController::GameController(Game *game) {
   this->game = game;
   this->world = game->getWorld();
   this->playerState = std::make_unique<PlayerState>();
@@ -28,6 +29,7 @@ namespace glPortal {
 void GameController::handleInput() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
+    game->getWindow().gwenInput->processEvent(event);
     handleEvent(event);
   }
 }
@@ -40,25 +42,38 @@ void GameController::handleEvent(const SDL_Event &event) {
   //  this->playerState->handleEvent(this->world->getPlayer(), event);
   this->gameState->handleInput(*this->game);
 
-  bool done = false;
-  //  SDL_Event event;
-  //  SDL_PollEvent(&event);
   int key = event.key.keysym.scancode;
   int mod = event.key.keysym.mod;
   int sym = event.key.keysym.sym;
+  // int cursor = event.edit.start;
+  // int selection_len = event.edit.length;
 
   switch (event.type) {
   case SDL_TEXTINPUT:
     Input::addToBuffer(event.text.text);
     break;
   case SDL_TEXTEDITING:
-    //    int cursor = event.edit.start;
-    //    int selection_len = event.edit.length;
+
     break;
   case SDL_KEYDOWN:
     if (sym == SDLK_BACKSPACE) {
       Input::truncateCharBuffer();
     }
+
+    if (sym == SDLK_RETURN) {
+      Input::clearBuffer();
+    }
+
+    if (sym == SDLK_F1) {
+      world->isPhysicsDebugEnabled = not world->isPhysicsDebugEnabled;
+    } else if (sym == SDLK_F5) {
+      if (Input::isKeyDown(SDL_SCANCODE_LSHIFT) || Input::isKeyDown(SDL_SCANCODE_RSHIFT)) {
+        // Enable reload-on-change (inotify on Linux)
+      }
+
+      world->loadScene(world->currentScenePath);
+    }
+    
     Input::keyPressed(key, mod);
     if (key == SDL_SCANCODE_Q) {
       game->close();
@@ -80,17 +95,6 @@ void GameController::handleEvent(const SDL_Event &event) {
     }
     break;
   }
-
-  // If F5 released, reload the scene
-  if (wasF5Down and not Input::isKeyDown(SDL_SCANCODE_F5)) {
-    if (Input::isKeyDown(SDL_SCANCODE_LSHIFT) || Input::isKeyDown(SDL_SCANCODE_RSHIFT)) {
-      // Enable reload-on-change (inotify on Linux)
-    }
-
-    world->loadScene(world->currentScenePath);
-  }
-  wasF5Down = Input::isKeyDown(SDL_SCANCODE_F5);
-  wasTabDown = Input::isKeyDown(SDL_SCANCODE_F5);
-
 }
-}
+
+} /* namespace glPortal */

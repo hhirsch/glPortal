@@ -1,16 +1,17 @@
 #include "Game.hpp"
 
-#include <SDL2/SDL_keyboard.h>
-#include <SDL2/SDL_timer.h>
 #include <stdexcept>
 #include <string>
 #include <cstdio>
 #include <iostream>
 
-#include "engine/env/Environment.hpp"
-#include "engine/env/ArgumentsParser.hpp"
+#include <SDL2/SDL_timer.h>
+
+#include <engine/env/Environment.hpp>
+#include <engine/env/ArgumentsParser.hpp>
 #include <engine/env/System.hpp>
 #include <engine/SoundManager.hpp>
+#include <engine/core/diag/Throwables.hpp>
 #include <engine/core/event/Observer.hpp>
 #include <engine/core/event/Dispatcher.hpp>
 #include <engine/core/event/observer/MusicObserver.hpp>
@@ -44,22 +45,23 @@ World* Game::getWorld() {
 }
 
 void Game::update() {
-  SDL_Event event;
-  unsigned int nextUpdate = SDL_GetTicks();
+  unsigned int nextUpdate = SDL_GetTicks(), lastUpdate = 0, lastRender = 0;
 
   while (not closed) {
-    int skipped;
-    skipped = 0;
+    int skipped = 0;
+    unsigned int currentTime = SDL_GetTicks();
     //Update the game if it is time
-    while (SDL_GetTicks() > nextUpdate && skipped < MAX_SKIP) {
+    while (currentTime > nextUpdate && skipped < MAX_SKIP) {
       controller->handleInput();
-      
+
       SoundManager::update(world.getPlayer());
-      world.update();
+      world.update((currentTime-lastUpdate)/1000.);
+      lastUpdate = currentTime;
       nextUpdate += SKIP_TIME;
       skipped++;
     }
-    world.render();
+    world.render((currentTime-lastRender)/1000.);
+    lastRender = currentTime;
     fps.countCycle();
     window.swapBuffers();
   }
@@ -70,11 +72,10 @@ void Game::update() {
 void Game::close() {
   closed = true;
 }
+
 } /* namespace glPortal */
 
 using namespace glPortal;
-
-Window window;
 
 int main(const int argc, char *argv[]) {
   System::Init();
@@ -82,7 +83,11 @@ int main(const int argc, char *argv[]) {
   Environment::init();
   ArgumentsParser::populateConfig();
 
-  Game game;
+  try {
+    Game game;
+  } catch (Exception::Error &err) {
+    System::Log(Error, err.source()) << err.what();
+  }
 
   return 0;
 }

@@ -1,11 +1,11 @@
-#ifndef LETTER_HPP
-#define LETTER_HPP
+#ifndef GLYPH_HPP
+#define GLYPH_HPP
 
 #include <assets/model/Mesh.hpp>
 
 namespace glPortal {
 
-class Letter {
+class Glyph {
 public:
   int x;
   int y;
@@ -20,4 +20,4 @@ public:
 
 } /* namespace glPortal */
 
-#endif /* LETTER_HPP */
+#endif /* GLYPH_HPP */

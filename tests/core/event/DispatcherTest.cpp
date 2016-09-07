@@ -15,18 +15,17 @@ struct DispatcherFixtures {
     Dispatcher dispatcher;
     FlagObserver observer(flag, true);
 
-    observer.addCallback(Event::loadScene, std::bind(&FlagObserver::execute, observer));    
+    observer.addCallback(Event::loadScene, std::bind(&FlagObserver::execute, observer));
     dispatcher.dispatch(Event::loadScene);
   }
   
   ~DispatcherFixtures() {}
 };
- 
+
 
 SUITE(DispatcherTest)
 {
-  TEST_FIXTURE(DispatcherFixtures, dispatchEvent){
-
+  TEST_FIXTURE(DispatcherFixtures, dispatchEvent) {
     CHECK(flag);
   }
 }

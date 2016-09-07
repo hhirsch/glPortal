@@ -1,7 +1,7 @@
 #ifndef SCREEN_HPP
 #define SCREEN_HPP
+
 #include <string>
-#include <engine/core/math/Vector2f.hpp>
 #include <engine/core/math/Vector4f.hpp>
 
 namespace glPortal {

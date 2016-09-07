@@ -11,15 +11,22 @@
 
 #include "Matrix3f.hpp"
 
+#include <cmath>
+#include <cstring>
+#include <sstream>
+
 #include "Matrix4f.hpp"
 #include "Vector3f.hpp"
 #include "Vector2f.hpp"
 #include "Math.hpp"
 
-#include <math.h>
-#include <sstream>
-
 namespace glPortal {
+
+static float Identity3[3*3] = {
+  1.f, 0.f, 0.f,
+  0.f, 1.f, 0.f,
+  0.f, 0.f, 1.f
+};
 
 /* Core */
 Matrix3f::Matrix3f() {
@@ -27,14 +34,7 @@ Matrix3f::Matrix3f() {
 }
 
 void Matrix3f::setIdentity() {
-  for (int i = 0; i < 9; i++) {
-    if (i % 4 == 0) {
-      a[i] = 1;
-    }
-    else {
-      a[i] = 0;
-    }
-  }
+  std::memcpy(a, Identity3, sizeof(Identity3));
 }
 
 void Matrix3f::translate(const Vector2f& v) {
@@ -97,30 +97,12 @@ std::string Matrix3f::str() const {
 
 
 /* Operator overloads */
-float Matrix3f::operator[](int i) const {
-  return a[i];
-}
-
-float& Matrix3f::operator[](int i) {
-  return a[i];
-}
-
 bool Matrix3f::operator==(const Matrix3f& m) const {
-  for (int i = 0; i < 9; i++) {
-    if (a[i] != m.a[i]) {
-      return false;
-    }
-  }
-  return true;
+  return std::memcmp(a, m.a, sizeof(a)) == 0;
 }
 
 bool Matrix3f::operator!=(const Matrix3f& m) const {
-  for (int i = 0; i < 9; i++) {
-    if (a[i] != m.a[i]) {
-      return true;
-    }
-  }
-  return false;
+  return std::memcmp(a, m.a, sizeof(a)) != 0;
 }
 
 Matrix3f Matrix3f::operator*(const Matrix3f& m) const {
@@ -143,16 +125,22 @@ Matrix3f Matrix3f::operator*(const Matrix3f& m) const {
 /* Utility functions */
 Matrix3f transpose(const Matrix3f& m) {
   Matrix3f d;
-  d[0] = m[0];  d[3] = m[1];  d[6] = m[2];
-  d[1] = m[3];  d[4] = m[4];  d[7] = m[5];
-  d[2] = m[6];  d[5] = m[7];  d[8] = m[8];
+  d[0] = m[0];
+  d[3] = m[1];
+  d[6] = m[2];
+  d[1] = m[3];
+  d[4] = m[4];
+  d[7] = m[5];
+  d[2] = m[6];
+  d[5] = m[7];
+  d[8] = m[8];
   return d;
 }
 
 float determinant(const Matrix3f& m) {
   float det =
-    m[0] * m[4] * m[8] + m[1] * m[5] * m[6] + m[2] * m[3] * m[7] -
-    m[0] * m[5] * m[7] - m[2] * m[4] * m[6] - m[1] * m[3] * m[8];
+      m[0] * m[4] * m[8] + m[1] * m[5] * m[6] + m[2] * m[3] * m[7] -
+      m[0] * m[5] * m[7] - m[2] * m[4] * m[6] - m[1] * m[3] * m[8];
 
   return det;
 }
@@ -178,12 +166,23 @@ Matrix3f inverse(const Matrix3f& m) {
 
 Matrix4f toMatrix4f(const Matrix3f& m) {
   Matrix4f d;
-  d[0] = m[0];  d[4] = m[3];  d[8] = m[6];  d[12] = 0;
-  d[1] = m[1];  d[5] = m[4];  d[9] = m[7];  d[13] = 0;
-  d[2] = m[2];  d[6] = m[5];  d[10] = m[8]; d[14] = 0;
-  d[3] = 0;     d[7] = 0;     d[11] = 0;    d[15] = 1;
+  d[0] = m[0];
+  d[4] = m[3];
+  d[8] = m[6];
+  d[12] = 0;
+  d[1] = m[1];
+  d[5] = m[4];
+  d[9] = m[7];
+  d[13] = 0;
+  d[2] = m[2];
+  d[6] = m[5];
+  d[10] = m[8];
+  d[14] = 0;
+  d[3] = 0;
+  d[7] = 0;
+  d[11] = 0;
+  d[15] = 1;
   return d;
 }
 
 } /* namespace glPortal */
-
